@@ -14,21 +14,33 @@
 
   <script>
     (function() {
-      // 👇 Replace with your actual Google Apps Script Web App URL
+      // 👇 Replace with your actual Google Apps Script Web App URL (must end with /exec)
       var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZaTaVZXIgiJBKKtqhbL22EKpMp7-QvK6fmp4pL3sXfrQHOI_ineYtbew3xW1JmqftsQ/exec";
 
       function sendLog() {
-        var payload = {
+        // Prepare URL-encoded parameters
+        var params = new URLSearchParams({
           path: window.location.pathname,
           referrer: document.referrer || "",
           ua: navigator.userAgent || "",
           note: "auto-logged"
-        };
+        });
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", SCRIPT_URL, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(payload));
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send(params.toString());
+
+        // Optional: log success or failure in console
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4) {
+            if(xhr.status === 200) {
+              console.log("Visitor logged successfully");
+            } else {
+              console.error("Failed to log visitor:", xhr.status, xhr.responseText);
+            }
+          }
+        };
       }
 
       // Automatically send log when the page loads
