@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Visitor Log Consent Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; }
+    #consent-box {
+      position: fixed; bottom: 1rem; left: 1rem; right: 1rem;
+      background: #fff; border: 1px solid #ccc; padding: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    button { padding: .5rem 1rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Welcome!</h1>
+  <p>This site logs visits to a private Google Sheet only if you consent.</p>
+
+  <div id="consent-box">
+    <div>
+      <strong>We’d like to log your visit</strong><br>
+      This saves your IP address, page path, and timestamp for analytics.  
+      Do you consent?
+    </div>
+    <div>
+      <button id="yes">I consent</button>
+      <button id="no">No thanks</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 👇 Replace with your actual Google Apps Script Web App URL
+      var SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+
+      var box = document.getElementById("consent-box");
+      var yesBtn = document.getElementById("yes");
+      var noBtn = document.getElementById("no");
+
+      // Simple cookie helpers
+      function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+          var d = new Date();
+          d.setTime(d.getTime() + (days*24*60*60*1000));
+          expires = "; expires=" + d.toUTCString();
+        }
+        document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+      }
+
+      function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) === ' ') c = c.substring(1);
+          if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length));
+        }
+        return null;
+      }
+
+      var consent = getCookie("sheet-consent");
+      if (consent === "yes") {
+        box.style.display = "none";
+        sendLog();
+      } else if (consent === "no") {
+        box.style.display = "none";
+      }
+
+      yesBtn.onclick = function() {
+        setCookie("sheet-consent", "yes", 180);
+        box.style.display = "none";
+        sendLog();
+      };
+
+      noBtn.onclick = function() {
+        setCookie("sheet-consent", "no", 180);
+        box.style.display = "none";
+      };
+
+      function sendLog() {
+        var payload = {
+          path: window.location.pathname,
+          referrer: document.referrer || "",
+          ua: navigator.userAgent || "",
+          note: "user-consented"
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", SCRIPT_URL, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(payload));
+      }
+    })();
+  </script>
+</body>
+</html>
