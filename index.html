@@ -2,52 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Visitor Log Example (No Consent)</title>
+  <title>Visitor Logger with IP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; }
-  </style>
+  <style>body { font-family: Arial, sans-serif; padding: 2rem; }</style>
 </head>
 <body>
   <h1>Welcome!</h1>
-  <p>This has the new changes.</p>
+  <p>This site logs visits automatically to a Google Sheet.</p>
 
-  <!-- Hidden form to send visitor data -->
-  <form id="visitorForm" action="https://script.google.com/macros/s/AKfycbzZaTaVZXIgiJBKKtqhbL22EKpMp7-QvK6fmp4pL3sXfrQHOI_ineYtbew3xW1JmqftsQ/exec" method="post" style="display:none;">
+  <!-- Hidden form -->
+  <form id="visitorForm" action="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" method="post" style="display:none;">
     <input type="hidden" name="path" value="">
     <input type="hidden" name="referrer" value="">
     <input type="hidden" name="ua" value="">
+    <input type="hidden" name="ip" value="">
     <input type="hidden" name="note" value="auto-logged">
   </form>
 
-<script>
-(async function() {
-  // Get the visitor IP from a free service
-  let ip = "unknown";
-  try {
-    let response = await fetch("https://api.ipify.org?format=json");
-    let data = await response.json();
-    ip = data.ip;
-  } catch (err) {
-    console.error("Failed to get IP", err);
-  }
+  <script>
+    (async function() {
+      // Step 1: Get visitor IP from ipify
+      let ip = "unknown";
+      try {
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        ip = data.ip;
+      } catch (err) {
+        console.error("Failed to get IP:", err);
+      }
 
-  // Submit the hidden form
-  var form = document.getElementById('visitorForm');
-  form.path.value = window.location.pathname;
-  form.referrer.value = document.referrer || "";
-  form.ua.value = navigator.userAgent || "";
-  
-  // Add IP as a hidden input
-  var ipInput = document.createElement("input");
-  ipInput.type = "hidden";
-  ipInput.name = "ip";
-  ipInput.value = ip;
-  form.appendChild(ipInput);
+      // Step 2: Populate form fields
+      const form = document.getElementById("visitorForm");
+      form.path.value = window.location.pathname;
+      form.referrer.value = document.referrer || "";
+      form.ua.value = navigator.userAgent || "";
+      form.ip.value = ip;
 
-  form.submit();
-})();
-</script>
-
+      // Step 3: Submit form
+      form.submit();
+    })();
+  </script>
 </body>
 </html>
