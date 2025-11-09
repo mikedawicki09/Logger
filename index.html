@@ -20,14 +20,34 @@
     <input type="hidden" name="note" value="auto-logged">
   </form>
 
-  <script>
-    (function() {
-      var form = document.getElementById('visitorForm');
-      form.path.value = window.location.pathname;
-      form.referrer.value = document.referrer || "";
-      form.ua.value = navigator.userAgent || "";
-      form.submit();
-    })();
-  </script>
+<script>
+(async function() {
+  // Get the visitor IP from a free service
+  let ip = "unknown";
+  try {
+    let response = await fetch("https://api.ipify.org?format=json");
+    let data = await response.json();
+    ip = data.ip;
+  } catch (err) {
+    console.error("Failed to get IP", err);
+  }
+
+  // Submit the hidden form
+  var form = document.getElementById('visitorForm');
+  form.path.value = window.location.pathname;
+  form.referrer.value = document.referrer || "";
+  form.ua.value = navigator.userAgent || "";
+  
+  // Add IP as a hidden input
+  var ipInput = document.createElement("input");
+  ipInput.type = "hidden";
+  ipInput.name = "ip";
+  ipInput.value = ip;
+  form.appendChild(ipInput);
+
+  form.submit();
+})();
+</script>
+
 </body>
 </html>
