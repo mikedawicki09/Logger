@@ -12,7 +12,11 @@
   <!-- Hidden form -->
   <form id="visitorForm" action="https://script.google.com/macros/s/AKfycbzZaTaVZXIgiJBKKtqhbL22EKpMp7-QvK6fmp4pL3sXfrQHOI_ineYtbew3xW1JmqftsQ/exec" method="post" style="display:none;">
     <input type="hidden" name="ip" value="">
-    <input type="hidden" name="chicken" value="">
+    <input type="hidden" name="latitude" value="">
+    <input type="hidden" name="country" value="">
+    <input type="hidden" name="city" value="">
+    <input type="hidden" name="region" value="">
+    <input type="hidden" name="longitude" value="">
   </form>
 
   <script>
@@ -25,9 +29,17 @@
         const data = await res.json();
         ip = data.ip;
         document.getElementById("ip").textContent = "Ip Address: " + ip;
+
+        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+        const geoData = await geoRes.json();
         
         searchparams.append("ip", ip);
-        searchparams.append("chicken", "chicken");        
+        searchparams.append("latitude", geoData.latitude);
+        searchparams.append("longitude", geoData.longitude);
+        searchparams.append("city", geoData.city);
+        searchparams.append("country", geoData.country);
+        searchparams.append("region", geoData.region);
+
         fetch(form.action, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
