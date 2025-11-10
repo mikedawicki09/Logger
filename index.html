@@ -9,6 +9,7 @@
 <body>
   <h2>Id:</h2>
   <h2 id="ip"></h2>
+
   <!-- Hidden form -->
   <form id="visitorForm" action="https://script.google.com/macros/s/AKfycbzZaTaVZXIgiJBKKtqhbL22EKpMp7-QvK6fmp4pL3sXfrQHOI_ineYtbew3xW1JmqftsQ/exec" method="post" style="display:none;">
     <input type="hidden" name="path" value="">
@@ -17,30 +18,28 @@
     <input type="hidden" name="ip" value="">
     <input type="hidden" name="note" value="auto-logged">
   </form>
+
   <script>
     (async function() {
-      // Step 1: Get visitor IP from ipify
       let ip = "unknown";
-        fetch("https://api.ipify.org?format=json")
-      .then(r => r.json())
-      .then(data => {
-        console.log(data); // See the object in the console
-        document.getElementById("ip").textContent = "Hello " + data.ip;
-      })
-      .catch(err => {
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        ip = data.ip;
+        document.getElementById("ip").textContent = "Hello " + ip;
+      } catch (err) {
         console.error("Fetch error:", err);
         document.getElementById("ip").textContent = "Error fetching IP";
-      });
+      }
 
-      // Step 2: Populate form fields
+      // Populate and submit form
       const form = document.getElementById("visitorForm");
       form.path.value = window.location.pathname;
       form.referrer.value = document.referrer || "";
       form.ua.value = navigator.userAgent || "";
       form.ip.value = ip;
 
-      // Step 3: Submit form
-     // form.submit();
+      // form.submit(); // Uncomment if you want to actually submit
     })();
   </script>
 </body>
