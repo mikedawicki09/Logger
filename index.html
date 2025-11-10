@@ -22,7 +22,7 @@
         const res = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
         ip = data.ip;
-        document.getElementById("ip").textContent = "Ip: " + ip;
+        document.getElementById("ip").textContent = "Ip Address: " + ip;
         form.ip.value = ip;
       } catch (err) {
         console.error("Fetch error:", err);
