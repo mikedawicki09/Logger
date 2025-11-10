@@ -12,6 +12,7 @@
   <!-- Hidden form -->
   <form id="visitorForm" action="https://script.google.com/macros/s/AKfycbzZaTaVZXIgiJBKKtqhbL22EKpMp7-QvK6fmp4pL3sXfrQHOI_ineYtbew3xW1JmqftsQ/exec" method="post" style="display:none;">
     <input type="hidden" name="ip" value="">
+    <input type="hidden" name="chicken" value="">
   </form>
 
   <script>
@@ -24,6 +25,7 @@
         ip = data.ip;
         document.getElementById("ip").textContent = "Ip Address: " + ip;
         form.ip.value = ip;
+        form.chicken.value = "chicken";
       } catch (err) {
         console.error("Fetch error:", err);
         document.getElementById("ip").textContent = "Error fetching IP";
