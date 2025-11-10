@@ -21,18 +21,16 @@
     (async function() {
       // Step 1: Get visitor IP from ipify
       let ip = "unknown";
-      try {
-        //const response = await fetch("https://api.ipify.org?format=json");
-        //const data = await response.json();
-        //ip = data.ip;
-      fetch("https://api.ipify.org?format=json")
-            .then(response => response.json())
-            .then(data => {
-              document.getElementById("ip").textContent = "Hello" + data;
-        
-      } catch (err) {
-        console.error("Failed to get IP:", err);
-      }
+        fetch("https://api.ipify.org?format=json")
+      .then(r => r.json())
+      .then(data => {
+        console.log(data); // See the object in the console
+        document.getElementById("ip").textContent = "Hello " + data.ip;
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        document.getElementById("ip").textContent = "Error fetching IP";
+      });
 
       // Step 2: Populate form fields
       const form = document.getElementById("visitorForm");
