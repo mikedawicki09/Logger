@@ -28,7 +28,13 @@
         console.error("Fetch error:", err);
         document.getElementById("ip").textContent = "Error fetching IP";
       }
-      form.submit();  
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form)
+      })
+      .then(res => res.text())
+      .then(result => console.log("Logged successfully:", result))
+      .catch(err => console.error("Logging failed:", err));
     })();
   </script>
 </body>
