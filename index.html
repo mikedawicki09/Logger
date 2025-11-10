@@ -38,7 +38,7 @@
         .catch(err => console.error(err));
           } catch (err) {
             console.error("Fetch error:", err);
-            document.getElementById("ip").textContent = "Error fetching IP";
+            document.getElementById("ip").textContent = "Error fetching IP: " + err;
           }
     })();
   </script>
